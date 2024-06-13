@@ -23,6 +23,8 @@ private slots:
 
     void on_addButton_2_clicked();
 
+    void on_comboBox_activated(int index);
+
 private:
     Ui::addwindow *ui;
     QSqlDatabase db;

@@ -286,24 +286,6 @@
     <string>-------------------</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="editbutton_2">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>330</y>
-     <width>100</width>
-     <height>50</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>9</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>подтвердить id</string>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>

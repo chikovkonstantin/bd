@@ -94,7 +94,8 @@ void viewwindow::on_confirmbutton_clicked()
     }
     else
     {
-        query.prepare("SELECT * FROM "+ ui->comboBox->currentText() + " WHERE " + ui->comboBox_2->currentText() + " = " + ui->lineEdit->text() + "");
+        query.prepare("SELECT * FROM "+ ui->comboBox->currentText() + " WHERE " + ui->comboBox_2->currentText() + " = (:lol) ");
+        query.bindValue(":lol", ui->lineEdit->text());
     }
     if(query.exec())
     {

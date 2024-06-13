@@ -34,50 +34,11 @@ editwindow::~editwindow()
     db.close();
 }
 
-
-
-
 void editwindow::on_backbutton_clicked()
 {
     this->close();
     db.close();
 }
-
-
-void editwindow::on_editbutton_2_clicked()
-{
-    QString text_1;
-    QString text_2;
-    QString text_3;
-    QString text_4;
-    if( ui->comboBox->currentIndex() == 0)
-    {
-        text_1="СТОИМОСТЬ:";
-        text_2="ТИП ДОМА:";
-        text_3="ГОРОД:";
-        text_4="АДРЕС:";
-    }
-    if( ui->comboBox->currentIndex() == 1)
-    {
-        text_1="ИМЯ:";
-        text_2="ФАМИЛИЯ:";
-        text_3="ОТЧЕТВО:";
-        text_4="НОМЕР ТЕЛЕФОНА:";
-    }
-    if( ui->comboBox->currentIndex() == 2)
-    {
-        text_1="ID ДОМА:";
-        text_2="ID ПОКУПАТЕЛЯ:";
-        text_3="ДАТА НАЧАЛА АРЕНДЫ";
-        text_4="ДАТА КОНЦА АРЕНДЫ";
-    }
-    ui->tag_1->setText(text_1);
-    ui->tag_2->setText(text_2);
-    ui->tag_3->setText(text_3);
-    ui->tag_4->setText(text_4);
-    control=true;
-}
-
 
 void editwindow::on_editbutton_clicked()
 {
@@ -127,21 +88,36 @@ void editwindow::on_editbutton_clicked()
         }
         if( ui->comboBox->currentIndex() == 2)
         {
-            edit_query.prepare("UPDATE booking SET hi=:hi, ci=:ci, start_date=:start_date, finish_date=:finish_date WHERE booking_id= " + value + " ");
-            edit_query.bindValue(":hi",ui->lineEdit->text());
-            edit_query.bindValue(":ci",ui->lineEdit_2->text());
-            edit_query.bindValue(":start_date",ui->lineEdit_3->text());
-            edit_query.bindValue(":finish_date",ui->lineEdit_4->text());
-            if(edit_query.exec())
+            QSqlQuery sec_query;
+            sec_query.prepare("select booking_id from booking where (hi = " + ui->lineEdit->text() + ") and (ci = " + ui->lineEdit_2->text() + ") and (booking_id <> " + value + ") and (  ( (start_date <= :sdn) and (finish_date >= :sdn) ) or ( (start_date <= :fdn) and (finish_date >= :fdn) ) or ( (start_date >= :sdn) and (finish_date <= :fdn) )  )");
+            sec_query.bindValue(":sdn", ui->lineEdit_3->text());
+            sec_query.bindValue(":fdn", ui->lineEdit_4->text());
+            sec_query.exec();
+            if  (sec_query.next())
             {
                 QMessageBox msgBox;
-                msgBox.setText("Данные отредактированы");
+                msgBox.setText("Недоступная дата");
                 msgBox.exec();
             }
-            else {
-                QMessageBox msgBox;
-                msgBox.setText("Ошибка редактирования данных");
-                msgBox.exec();
+            else
+            {
+                edit_query.prepare("UPDATE booking SET hi=:hi, ci=:ci, start_date=:start_date, finish_date=:finish_date WHERE booking_id= " + value + " ");
+                edit_query.bindValue(":hi",ui->lineEdit->text());
+                edit_query.bindValue(":ci",ui->lineEdit_2->text());
+                edit_query.bindValue(":start_date",ui->lineEdit_3->text());
+                edit_query.bindValue(":finish_date",ui->lineEdit_4->text());
+                if(edit_query.exec())
+                {
+                    QMessageBox msgBox;
+                    msgBox.setText("Данные отредактированы");
+                    msgBox.exec();
+                }
+                else
+                {
+                    QMessageBox msgBox;
+                    msgBox.setText("Ошибка редактирования данных");
+                    msgBox.exec();
+                }
             }
         }
     }
@@ -151,5 +127,40 @@ void editwindow::on_editbutton_clicked()
         msgBox.setText("Сначала выберите таблицу");
         msgBox.exec();
     }
+}
+
+
+void editwindow::on_comboBox_activated(int index)
+{
+    control = true;
+    QString text_1;
+    QString text_2;
+    QString text_3;
+    QString text_4;
+    if( ui->comboBox->currentIndex() == 0)
+    {
+        text_1="СТОИМОСТЬ:";
+        text_2="ТИП ДОМА:";
+        text_3="ГОРОД:";
+        text_4="АДРЕС:";
+    }
+    if( ui->comboBox->currentIndex() == 1)
+    {
+        text_1="ИМЯ:";
+        text_2="ФАМИЛИЯ:";
+        text_3="ОТЧЕТВО:";
+        text_4="НОМЕР ТЕЛЕФОНА:";
+    }
+    if( ui->comboBox->currentIndex() == 2)
+    {
+        text_1="ID ДОМА:";
+        text_2="ID ПОКУПАТЕЛЯ:";
+        text_3="ДАТА НАЧАЛА АРЕНДЫ";
+        text_4="ДАТА КОНЦА АРЕНДЫ";
+    }
+    ui->tag_1->setText(text_1);
+    ui->tag_2->setText(text_2);
+    ui->tag_3->setText(text_3);
+    ui->tag_4->setText(text_4);
 }
 
