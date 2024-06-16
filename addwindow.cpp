@@ -109,9 +109,23 @@ void addwindow::on_addButton_2_clicked()
                 add_query.addBindValue(ui->lineEdit_4->text());
                 if(add_query.exec())
                 {
-                    QMessageBox msgBox;
-                    msgBox.setText("Данные добавлены");
-                    msgBox.exec();
+                    QSqlQuery th_query;
+                    th_query.prepare("select * FROM booking WHERE start_date > finish_date");
+                    th_query.exec();
+                    if(th_query.next())
+                    {
+                        th_query.prepare("delete FROM booking WHERE start_date > finish_date");
+                        th_query.exec();
+                        QMessageBox msgBox;
+                        msgBox.setText("Неверная дата");
+                        msgBox.exec();
+                    }
+                    else
+                    {
+                        QMessageBox msgBox;
+                        msgBox.setText("Данные добавлены");
+                        msgBox.exec();
+                    }
                 }
                 else {
                     QMessageBox msgBox;

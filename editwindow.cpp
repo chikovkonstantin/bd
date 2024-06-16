@@ -108,9 +108,23 @@ void editwindow::on_editbutton_clicked()
                 edit_query.bindValue(":finish_date",ui->lineEdit_4->text());
                 if(edit_query.exec())
                 {
-                    QMessageBox msgBox;
-                    msgBox.setText("Данные отредактированы");
-                    msgBox.exec();
+                    QSqlQuery th_query;
+                    th_query.prepare("select * FROM booking WHERE start_date > finish_date");
+                    th_query.exec();
+                    if(th_query.next())
+                    {
+                        th_query.prepare("delete FROM booking WHERE start_date > finish_date");
+                        th_query.exec();
+                        QMessageBox msgBox;
+                        msgBox.setText("Неверная дата");
+                        msgBox.exec();
+                    }
+                    else
+                    {
+                        QMessageBox msgBox;
+                        msgBox.setText("Данные отредактированы");
+                        msgBox.exec();
+                    }
                 }
                 else
                 {
